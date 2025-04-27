@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <%- include('../_shared/meta.ejs') %>
+  <title>Todo List</title>
+  <%- include('../_shared/stylesheets.ejs') %>
+  <!-- <link rel="stylesheet" href="/public/css/home/index.css" /> -->
+</head>
+
+<body>
+  <%- include('../_shared/header.ejs') %>
+
+  <div b-bddmc6yalx class="container">
+    <main role="main" class="pb-3">
+      <div class="mb-3">
+        <a class="btn btn-primary" href="/todo/create">新規タスク作成</a>
+      </div>
+
+      <div>
+        <table class="table table-border">
+            <tr>
+                <th>件名</th>
+                <th>締め切り</th>
+                <th>優先度</th>
+                <th>ステータス</th>
+                <th>操作</th>
+            </tr>
+            <% for (let item of tasks) { %>
+            <tr>
+                <td><%= item.Title %></td>
+                <td><%= item.Deadline ? DateTime.fromJSDate(item.Deadline).toFormat('yyyy/MM/dd') : ''%></td>
+                <td><%= item.Priority %></td>
+                <td><%= item.Status %></td>
+                <td>
+                    <form method="GET" action="/todo/edit/<%= item.TaskId %>" class="d-inline">
+                        <button type="submit" class="btn btn-light"><i class="fas fa-edit"></i></button>
+                    </form>
+                    <form method="POST" action="/todo/delete/<%= item.TaskId %>" class="d-inline">
+                        <button type="submit" class="btn btn-light"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                </td>
+            </tr>
+            <% } %>
+        </table>
+    </div>
+
+    </main>
+  </div>
+
+  <%- include('../_shared/footer.ejs') %>
+  <%- include('../_shared/javascripts.ejs') %>
+</body>
+
+</html>

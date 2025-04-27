@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <%- include('../_shared/meta.ejs') %>
+  <title>Todo Edit</title>
+  <%- include('../_shared/stylesheets.ejs') %>
+  <!-- <link rel="stylesheet" href="/public/css/home/index.css" /> -->
+</head>
+
+<body>
+  <%- include('../_shared/header.ejs') %>
+
+  <div b-bddmc6yalx class="container">
+    <main role="main" class="pb-3">
+      <form method="POST" action="/todo/edit/<%= item.TaskId %>">
+        <div class="mb-3">
+          <label for="title">件名 <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="title" name="title" value="<%= item.Title %>">
+        </div>
+        <div class="mb-3">
+          <label for="description">説明</label>
+          <textarea class="form-control" id="description" name="description" rows="3"><%= item.Description %></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="deadline">締め切り</label>
+          <input type="date" class="form-control" id="deadline" name="deadline" value="<%= DateTime.fromJSDate(item.Deadline).toFormat('yyyy-MM-dd') %>">
+        </div>
+        <div class="mb-3">
+          <label for="priority">優先度</label>
+          <select class="form-control" id="priority" name="priority">
+            <option <%= item.Priority === '' ? 'selected' : ''%>></option>
+            <option <%= item.Priority === '高' ? 'selected' : ''%>>高</option>
+            <option <%= item.Priority === '中' ? 'selected' : ''%>>中</option>
+            <option <%= item.Priority === '低' ? 'selected' : ''%>>低</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="status">ステータス</label>
+          <select class="form-control" id="status" name="status">
+            <option <%= item.Status === '' ? 'selected' : ''%>></option>
+            <option <%= item.Status === '未着手' ? 'selected' : ''%>>未着手</option>
+            <option <%= item.Status === '着手中' ? 'selected' : ''%>>着手中</option>
+            <option <%= item.Status === '完了' ? 'selected' : ''%>>完了</option>
+          </select>
+        </div>
+        <div>
+          <input type="hidden" id="taskid" name="taskid" value="<%= item.TaskId %>">
+        </div>
+        <a class="btn btn-light" href="/todo/index">キャンセル</a>
+        <button type="submit" class="btn btn-primary">更新</button>
+      </form>
+    </main>
+  </div>
+
+  <%- include('../_shared/footer.ejs') %>
+  <%- include('../_shared/javascripts.ejs') %>
+</body>
+
+</html>
