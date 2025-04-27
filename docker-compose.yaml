@@ -1,0 +1,27 @@
+services:
+  db:
+    image: mysql:8.4
+    command:
+      - 'mysqld'
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+    volumes:
+      - ./db/initdb:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+  webapp:
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile
+    command: npm start
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
