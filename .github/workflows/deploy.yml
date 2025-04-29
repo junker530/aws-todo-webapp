@@ -8,13 +8,33 @@ permissions:
   contents: read
 
 jobs:
-  sample:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Run
-        run:  |
-          echo "Hello, World"
-          echo "This is a sample workflow."
-          echo "You can customize it as per your requirements."
+        uses: actions/checkout@
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/confiugre-aws-credentials@v4
+        with:
+          aws-region: "ap-northeast-1"
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app
+          file: ./app/Dockerfile
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.AWS_ECR_REPOSITORY }}:${{ github.sha }}
+          cache-from: type=registry, ref=${{ secrets.AWS_ECR_REPOSITORY }}:cache
+          cache-to: type=registry, ref=${{ secrets.AWS_ECR_REPOSITORY }}:cache,mode=max
+          build-args:
+            AWS_REGION=${{ secrets.AWS_REGION }}
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
