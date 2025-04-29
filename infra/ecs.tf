@@ -101,23 +101,25 @@ resource "aws_ecs_task_definition" "webapp" {
           protocol      = "tcp"
         },
       ]
+      secrets = [
+        {
+          name      = "MYSQL_HOST"
+          valueFrom = "${aws_secretsmanager_secret.mysql.arn}:hostname::"
+        },
+        {
+          name      = "MYSQL_USER"
+          valueFrom = "${aws_secretsmanager_secret.mysql.arn}:username::"
+        },
+        {
+          name      = "MYSQL_PASSWORD"
+          valueFrom = "${aws_secretsmanager_secret.mysql.arn}:password::"
+        },
+        {
+          name      = "MYSQL_DATABASE"
+          valueFrom = "${aws_secretsmanager_secret.mysql.arn}:database::"
+        }
+      ]
       environment = [
-        {
-          name = "MYSQL_HOST"
-          value = "localhost"
-        },
-        {
-          name  = "MYSQL_USER"
-          value = var.mysql_username
-        },
-        {
-          name  = "MYSQL_PASSWORD"
-          value = var.mysql_password
-        },
-        {
-          name  = "MYSQL_DATABASE"
-          value = var.mysql_database
-        },
         {
           name  = "MYSQL_SSL"
           value = "false"
